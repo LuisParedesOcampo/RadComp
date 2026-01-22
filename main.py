@@ -1,4 +1,6 @@
 import streamlit as st
+import plotly.graph_objects as go
+
 
 # 1. Page Configuration (Metadata for SEO)
 st.set_page_config(
@@ -48,7 +50,7 @@ with st.sidebar:
 
     # Alpha/Beta Ratio Input with manual override detection
     ab_user = st.number_input(
-        f"Alpha/Beta Ratio (Gy) for {selection}",
+        f"Alpha/Beta Ratio for {selection}",
         min_value=0.1,
         max_value=25.0,
         value=ab_default,
@@ -97,8 +99,56 @@ with col2:
     st.metric("EQD2 B", f"{eqd2_b:.2f} Gy")
     st.metric("Alpha/Beta Ratio", f"{ab:.2f}")
 
-st.divider()
 
+
+# --- VISUALIZATION SECTION ---
+st.divider()
+st.subheader("📊 Biological Dose Comparison")
+
+# Data preparation
+metrics = ['BED (Gy)', 'EQD2 (Gy)']
+values_a = [bed_a, eqd2_a]
+values_b = [bed_b, eqd2_b]
+
+# Create the figure
+fig = go.Figure()
+
+# Add Bars for Schedule A
+fig.add_trace(go.Bar(
+    x=metrics,
+    y=values_a,
+    name='Schedule A (Ref)',
+    marker_color='#1f77b4', # Professional Blue
+    text=[f"{v:.2f}" for v in values_a],
+    textposition='auto',
+))
+
+# Add Bars for Schedule B
+fig.add_trace(go.Bar(
+    x=metrics,
+    y=values_b,
+    name='Schedule B (New)',
+    marker_color='#ff7f0e', # Contrast Orange
+    text=[f"{v:.2f}" for v in values_b],
+    textposition='auto',
+))
+
+# Layout Styling
+fig.update_layout(
+    barmode='group',
+    template='plotly_white',
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    yaxis_title="Dose (Gy)",
+    margin=dict(l=20, r=20, t=60, b=20),
+    height=450
+)
+
+# Display the chart
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+st.divider()
 # Legal Disclaimer Section
 st.subheader("⚠️ Disclaimer & Terms of Use")
 
