@@ -124,7 +124,7 @@ st.markdown("""
 Are you interested in new features or have suggestions for future developments? 
 I am open to collaborations and professional opportunities in Medical Physics and Software Development.
 
-- **LinkedIn:** [Luis Fernando Paredes / Link to Profile](https://www.linkedin.com/in/lfparedes1/)
+- **LinkedIn:** [Luis Fernando Paredes ](https://www.linkedin.com/in/lfparedes1/)
 - **GitHub:** [Project Repository](https://github.com/LuisParedesOcampo/RadComp.git)
 - **Email:** luisfernandoparedes2@gmail.com
 
