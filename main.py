@@ -11,6 +11,7 @@ st.set_page_config(
 )
 
 st.title("RadComp")
+st.info("A clinical tool for BED and EQD2 calculations based on QUANTEC and international standards")
 
 # 2. International Clinical Database (QUANTEC & Global References)
 clinical_data = {
