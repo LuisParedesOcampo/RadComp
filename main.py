@@ -58,7 +58,7 @@ with st.sidebar:
     # Credibility and Traceability Logic
     if ab_user == ab_default:
         st.success(f"📚 **Reference Source:** {source_ref}")
-        st.caption(f"Suggested Dose Limit: {limit_ref} Gy")
+        #st.caption(f"Suggested Dose Limit: {limit_ref} Gy")
     else:
         st.warning("⚠️ **Custom Value Applied**")
         st.info("The standard reference source no longer applies due to manual override.")
@@ -95,3 +95,38 @@ with col2:
     st.metric("BED B", f"{bed_b:.2f} Gy")
     st.metric("EQD2 B", f"{eqd2_b:.2f} Gy")
     st.metric("Alpha/Beta Ratio", f"{ab:.2f}")
+
+st.divider()
+
+# Legal Disclaimer Section
+st.subheader("⚠️ Disclaimer & Terms of Use")
+
+st.markdown("""
+<div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #dee2e6;">
+    <p style="color: #6c757d; font-size: 0.9em;">
+        <strong>Notice:</strong> This software is intended for <strong>educational and research purposes only</strong>. 
+        It is not a medical device and has not been cleared by any regulatory body (FDA, CE, etc.) for clinical use.
+    </p>
+    <ul style="color: #6c757d; font-size: 0.85em;">
+        <li><strong>Responsibility:</strong> The user assumes all responsibility for the interpretation and clinical application of the results provided by this tool.</li>
+        <li><strong>Verification:</strong> Calculations must be independently verified by a certified Medical Physicist or Radiation Oncologist before any clinical decision.</li>
+        <li><strong>Liability:</strong> The developers of RadComp shall not be held liable for any damages, clinical errors, or consequences arising from the use or misuse of this software.</li>
+    </ul>
+    <p style="color: #6c757d; font-size: 0.85em; font-style: italic;">
+        By using this application, you acknowledge and agree to these terms.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+# Contact & Collaboration Section
+st.write("") # Espacio en blanco
+st.subheader("Contact & Feedback")
+st.markdown("""
+Are you interested in new features or have suggestions for future developments? 
+I am open to collaborations and professional opportunities in Medical Physics and Software Development.
+
+- **LinkedIn:** [Luis Fernando Paredes / Link to Profile](https://www.linkedin.com/in/lfparedes1/)
+- **GitHub:** [Project Repository](https://github.com/LuisParedesOcampo/RadComp.git)
+- **Email:** luisfernandoparedes2@gmail.com
+
+*Developed by a Clinical Medical Physicist*
+""")
