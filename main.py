@@ -1,5 +1,12 @@
 import streamlit as st
-
+st.set_page_config(
+    page_title="RadComp | Calculadora de Radiobiología para Física Médica",
+    page_icon="🧬",
+    layout="wide",
+    menu_items={
+        'About': "RadComp: Herramienta para el cálculo de BED y EQD2 basada en QUANTEC."
+    }
+)
 st.title("RadComp")
 
 
