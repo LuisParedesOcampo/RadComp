@@ -51,8 +51,8 @@ with st.sidebar:
     # Alpha/Beta Ratio Input with manual override detection
     ab_user = st.number_input(
         f"Alpha/Beta Ratio for {selection}",
-        min_value=0.1,
-        max_value=25.0,
+        min_value=0.5,
+        max_value=20.0,
         value=ab_default,
         step=0.1,
         help="You can modify this value for custom calculations based on clinical criteria."
@@ -68,17 +68,26 @@ with st.sidebar:
 
     ab = ab_user
 
+
+def biology_calculation(total_dose: float, fractions: int, ab: float):
+    """
+    Calcula BED y EQD2 con validación de seguridad.
+    """
+    if fractions <= 0 or ab <= 0:
+        return 0.0, 0.0, 0.0  # Evita el error de división por cero
+    dose_per_frac = total_dose / fractions
+    bed = total_dose * (1 + (dose_per_frac / ab))
+    eqd2 = bed / (1 + (2 / ab))
+
+    return bed, eqd2, dose_per_frac
 # 4. Main Layout: Comparative View
 col1, col2 = st.columns(2)
-
 with col1:
     st.subheader("Schedule A (Reference)")
     total_dose_a = st.number_input("Total Dose A (Gy)", min_value=0.0, value=45.0, key="dose_a")
     fractions_a = st.number_input("Number of Fractions A", min_value=1, value=25, key="frac_a")
 
-    dose_per_frac_a = total_dose_a / fractions_a
-    bed_a = total_dose_a * (1 + (dose_per_frac_a / ab))
-    eqd2_a = bed_a / (1 + (2 / ab))
+    bed_a, eqd2_a, dose_per_frac_a = biology_calculation(total_dose_a, fractions_a, ab) #asi se pueden guardar los valores de una tupla
 
     st.metric("Dose per Fraction A", f"{dose_per_frac_a:.2f} Gy")
     st.metric("BED A", f"{bed_a:.2f} Gy")
@@ -90,9 +99,7 @@ with col2:
     total_dose_b = st.number_input("Total Dose B (Gy)", min_value=0.0, value=30.0, key="dose_b")
     fractions_b = st.number_input("Number of Fractions B", min_value=1, value=10, key="frac_b")
 
-    dose_per_frac_b = total_dose_b / fractions_b
-    bed_b = total_dose_b * (1 + (dose_per_frac_b / ab))
-    eqd2_b = bed_b / (1 + (2 / ab))
+    bed_b, eqd2_b, dose_per_frac_b = biology_calculation(total_dose_b, fractions_b, ab)
 
     st.metric("Dose per Fraction B", f"{dose_per_frac_b:.2f} Gy")
     st.metric("BED B", f"{bed_b:.2f} Gy")
