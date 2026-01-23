@@ -393,7 +393,7 @@ if mode == "Re-irradiation":
 # --- VISUALIZATION SECTION ---
 
 st.divider()
-st.subheader("📊 Análisis Biológico Visual")
+st.subheader("📊 Visual Biological Analysis")
 
 # 1. Preparación de datos según el modo
 if mode == "Re-irradiation":
@@ -403,14 +403,14 @@ if mode == "Re-irradiation":
     # Calculamos el EQD2 efectivo de RT1 para que el "stack" sea matemáticamente correcto
     effective_eqd2_a = effective_bed_a / (1 + (2 / ab))
 
-    label_a = "RT1 (Dosis Efectiva)"
-    label_b = "RT2 (Dosis Nueva)"
+    label_a = "RT1 (Effective Dose)"
+    label_b = "RT2 (New Dose)"
 
     plot_values_a = [effective_bed_a, effective_eqd2_a]
     plot_values_b = [bed_b, eqd2_b]
 
     current_barmode = 'stack'
-    y_axis_label = "Dosis Acumulada (Gy)"
+    y_axis_label = "Accumulated Dose (Gy)"
 else:
     # Modo estándar: comparativa lateral simple
     label_a = "Schedule A (Ref)"
@@ -420,7 +420,7 @@ else:
     plot_values_b = [bed_b, eqd2_b]
 
     current_barmode = 'group'
-    y_axis_label = "Dosis (Gy)"
+    y_axis_label = "Dose (Gy)"
 
 # 2. Creación del gráfico
 fig = go.Figure()
