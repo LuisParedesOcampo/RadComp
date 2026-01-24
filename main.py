@@ -242,11 +242,12 @@ with st.sidebar:
     # Credibility and Traceability Logic
     if ab_user == ab_default:
         st.success(f"📚 **Reference Source:** {source_ref}")
-        # st.caption(f"Suggested Dose Limit: {limit_ref} Gy")
+
     else:
         st.warning("⚠️ **Custom Value Applied**")
         st.info("The standard reference source no longer applies due to manual override.")
 
+    st.caption(f"Suggested Dose Limit: {limit_ref} Gy {limit_type_ref} ")
     ab = ab_user
 
     if mode == "Re-irradiation":
