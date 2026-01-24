@@ -420,7 +420,7 @@ if mode == "Re-irradiation":
     # Calculamos el EQD2 efectivo de RT1 para que el "stack" sea matemáticamente correcto
     effective_eqd2_a = effective_bed_a / (1 + (2 / ab))
 
-    label_a = "RT1 (Effective Dose)"
+    label_a = "RT1 (Remaining Dose)"
     label_b = "RT2 (New Dose)"
 
     plot_values_a = [effective_bed_a, effective_eqd2_a]
