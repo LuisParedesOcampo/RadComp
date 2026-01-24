@@ -278,10 +278,12 @@ with st.sidebar:
                 **Spatial overlap adjustment**
 
                 - Selected overlap level: **{overlap}**
-                - Applied BED penalty on RT1: **+{penalty_percentage}%**
+                - Applied BED penalty on RT1 (first treatment course only): **+{penalty_percentage}%**
 
-                This adjustment accounts for increased biological risk when
-                high-dose regions overlap between treatment courses.
+                This adjustment reflects increased biological risk in previously
+                irradiated tissue when high-dose regions overlap.
+                The penalty is applied exclusively to the biologically adjusted
+                dose from RT1 and does not affect the new treatment course (RT2).
                 """
         )
 
