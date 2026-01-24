@@ -11,6 +11,22 @@ st.set_page_config(
     }
 )
 
+# INYECCIÓN DE GOOGLE ANALYTICS (Solo si tienes el ID)
+# Reemplaza G-XXXXXXXXXX por tu ID real.
+ga_id = st.secrets["GOOGLE_ANALYTICS_ID"]
+st.markdown(
+    f"""
+    <script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){{dataLayer.push(arguments);}}
+        gtag('js', new Date());
+        gtag('config', '{ga_id}');
+    </script>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("RadComp")
 st.info("A clinical tool for BED , EQD2  and Reirradiation calculations based on QUANTEC and international standards")
 
