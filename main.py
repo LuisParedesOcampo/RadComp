@@ -13,19 +13,22 @@ st.set_page_config(
 
 # INYECCIÓN DE GOOGLE ANALYTICS (Solo si tienes el ID)
 # Reemplaza G-XXXXXXXXXX por tu ID real.
-ga_id = st.secrets["GOOGLE_ANALYTICS_ID"]
-st.markdown(
-    f"""
-    <script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){{dataLayer.push(arguments);}}
-        gtag('js', new Date());
-        gtag('config', '{ga_id}');
-    </script>
-    """,
-    unsafe_allow_html=True
-)
+ga_id = st.secrets.get("GOOGLE_ANALYTICS_ID", None)
+
+if ga_id:
+    st.markdown(
+        f"""
+        <script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){{dataLayer.push(arguments);}}
+            gtag('js', new Date());
+            gtag('config', '{ga_id}');
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 st.title("RadComp")
 st.info("A clinical tool for BED , EQD2  and Reirradiation calculations based on QUANTEC and international standards")
@@ -271,21 +274,67 @@ with st.sidebar:
             "Overlap with previous high-dose region",
             ["None", "Partial", "High"]
         )
+        if overlap != "None":
+            overlap_application = st.radio(
+                "How should the overlap penalty be applied?",
+                options=["cumulative", "rt1_only"],
+                format_func=lambda x:
+                "Apply to cumulative dose (RT1 + RT2) (default, conservative)"
+                if x == "cumulative"
+                else "Apply only to first treatment (RT1)"
+            )
+
         penalty = overlap_penalty[overlap]
         penalty_percentage = int(penalty * 100)
-        st.info(
-            f"""
-                **Spatial overlap adjustment**
 
-                - Selected overlap level: **{overlap}**
-                - Applied BED penalty on RT1 (first treatment course only): **+{penalty_percentage}%**
-
-                This adjustment reflects increased biological risk in previously
-                irradiated tissue when high-dose regions overlap.
-                The penalty is applied exclusively to the biologically adjusted
-                dose from RT1 and does not affect the new treatment course (RT2).
+        if overlap == "None":
+            st.info(
                 """
-        )
+                **No spatial overlap assumed**
+  
+                - No overlap-related biological penalty is applied.
+                - Cumulative dose is calculated as:
+                  **RT1 (with or without recovery) + RT2**.
+  
+                This option assumes that the re-irradiated volume does **not**
+                significantly overlap with previously high-dose regions.
+                """
+            )
+
+        else:
+             if overlap_application == "cumulative":
+                 st.info(
+                    f"""
+                        **Conservative overlap model**
+
+                        - Selected overlap level: **{overlap}**
+                        - Applied biological penalty (BED-based): **+{penalty_percentage}%**
+                        - Penalty applied to: **Cumulative biological dose (RT1 + RT2)**
+
+                        This conservative approach assumes that spatial overlap between
+                        high-dose regions increases the overall biological risk of the
+                        combined treatments.
+                        """
+                 )
+             else:
+                st.info(
+                    f"""
+                        **RT1-based overlap model**
+
+                        - Selected overlap level: **{overlap}**
+                        - Applied biological penalty (BED-based): **+{penalty_percentage}%**
+                        - Penalty applied to: **Previous treatment only (RT1)**
+
+                        This approach assumes that the increased biological risk associated
+                        with overlap primarily reflects pre-existing tissue damage from
+                        the first irradiation course.
+                        """
+                )
+
+        st.caption(
+        "Overlap adjustments are model-based assumptions and do not replace "
+        "volumetric dose evaluation or clinical judgment."
+         )
 
 # 4. Main Layout: Comparative View
 col1, col2 = st.columns(2)
@@ -367,11 +416,18 @@ if mode == "Re-irradiation":
                    """
         )
 
-    # “The overlap penalty is applied to the effective BED from RT1 after recovery modeling.”
-    effective_bed_a *= (1 + overlap_penalty[overlap])
+    # “The overlap penalty is applied to the effective BED
+    if overlap != "None":
+        if overlap_application == "cumulative":
+            bed_cumulative = (effective_bed_a + bed_b) * (1 + overlap_penalty[overlap])
+        else:
+            bed_cumulative = (effective_bed_a * (1 + overlap_penalty[overlap])) + bed_b
+    else:
+        bed_cumulative = effective_bed_a + bed_b
 
-    bed_cumulative = effective_bed_a + bed_b
+    #bed_cumulative = effective_bed + bed_b
     eqd2_cumulative = bed_cumulative / (1 + (2 / ab))
+    #eqd2_cumulative = effective_bed / (1 + (2 / ab))
 
     col3, col4 = st.columns(2)
     with col3:
