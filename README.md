@@ -35,7 +35,7 @@ Where $D$ is the total dose, $d$ is the dose per fraction, and $\alpha/\beta$ is
 🚀 Installation & Local Run
 To run this project locally, clone the repository and install the dependencies:
 
-git clone https://github.com/your-username/RadComp.git
+git clone [https://github.com/LuisParedesOcampo/RadComp.git]
 
 - cd RadComp
 - pip install -r requirements.txt
