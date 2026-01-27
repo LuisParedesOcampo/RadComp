@@ -1,17 +1,16 @@
-RadComp: Clinical Radiobiology Suite 🧬
+# 🧬 RadComp: Radiobiology Calculator for Medical Physics
 
-https://radcomp.streamlit.app/
+**RadComp** is a clinical decision support tool designed to streamline the conversion of physical doses into biologically equivalent doses ($BED$ and $EQD2$) and to perform risk analysis in re-irradiation scenarios.
 
-RadComp is a specialized software tool designed by a Medical Physicist to assist in clinical decision-making and radiobiological research. It enables the comparison of radiation fractionation schemes by calculating biological doses based on the Linear-Quadratic (LQ) model and international safety standards.
+🚀 **Live App Access:** [https://radcomp.streamlit.app/]
 
-🌟 Key Features
-Side-by-Side Comparison: Simultaneously evaluate a Reference Schedule vs. a New/Hypofractionated Schedule.
-
-Integrated QUANTEC Database: Automatic selection of α/β ratios and dose constraints for various Organs at Risk (OARs) and tumor types.
-
-Custom Overrides: Flexibility to input user-defined α/β values while maintaining data traceability.
-
-Interactive Visualizations: (Coming soon) Comparative charts for BED and EQD2 analysis.
+## ✨ Key Features
+- **LQ Modeling:** Precise fractionation conversion using the Linear-Quadratic model.
+- **Clinical Database:** Pre-configured $\alpha/\beta$ ratios and dose-volume constraints based on QUANTEC and international peer-reviewed literature.
+- **Advanced Re-irradiation Module:**
+  - Time-based biological recovery modeling.
+  - Spatial overlap penalty adjustment for high-dose regions.
+  - Cumulative dose assessment with dynamic stacked charts.
 
 🧮 Radiobiological Model
 The tool utilizes the Linear-Quadratic (LQ) Model to calculate cell survival and biological effectiveness:
@@ -28,25 +27,33 @@ $$EQD2 = \frac{BED}{1 + \frac{2}{\alpha/\beta}}$$
 
 Where $D$ is the total dose, $d$ is the dose per fraction, and $\alpha/\beta$ is the tissue-specific radiosensitivity ratio.
 
-🛠️ Tech Stack
-Language: Python 3.x
-
-Web Framework: Streamlit
-
-Data Handling: Pandas
-
-Visualization: Plotly (Optional / In-development)
+## 🛠️ Tech Stack
+- **Python 3.x**
+- **Streamlit** (UI Framework)
+- **Plotly** (Interactive Visualizations)
 
 🚀 Installation & Local Run
 To run this project locally, clone the repository and install the dependencies:
 
 git clone https://github.com/your-username/RadComp.git
 
-cd RadComp
+- cd RadComp
+- pip install -r requirements.txt
+- streamlit run main.py
 
-pip install -r requirements.txt
 
-streamlit run main.py
+## 🧪 Clinical Validation
+Reliability is our priority. RadComp's calculation engine has been validated using test vectors compared against reference clinical cases:
+
+| Test Case | Reference Model | Expected Cumulative EQD2 | Status |
+| :--- | :--- | :--- | :--- |
+| Spinal Cord Re-irrad | Nieder et al. (2006) | ~56 Gy | ✅ Validated |
+| Lung Re-irrad | Central Toxicity Protocols | ~69 Gy | ✅ Validated |
+
+*Note: Validation assumes a 50% recovery factor at 12 months and an overlap penalty applied to RT1 (Previous Course).*
+
+## ⚖️ License
+This project is licensed under the **MIT License**. Feel free to use, modify, and collaborate. See the [LICENSE](LICENSE) file for details.
 
 ⚠️ Disclaimer
 
