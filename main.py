@@ -11,8 +11,7 @@ st.set_page_config(
     }
 )
 
-# INYECCIÓN DE GOOGLE ANALYTICS (Solo si tienes el ID)
-# Reemplaza G-XXXXXXXXXX por tu ID real.
+# INYECCIÓN DE GOOGLE ANALYTICS
 ga_id = st.secrets.get("GOOGLE_ANALYTICS_ID", None)
 
 if ga_id:
@@ -28,7 +27,6 @@ if ga_id:
         """,
         unsafe_allow_html=True
     )
-
 
 st.title("RadComp")
 st.info("A clinical tool for BED , EQD2  and Reirradiation calculations based on QUANTEC and international standards")
@@ -335,8 +333,9 @@ with st.sidebar:
         "Overlap adjustments are model-based assumptions and do not replace "
         "volumetric dose evaluation or clinical judgment."
          )
-
+# ----------------------------------------------------------------------------------------------------------------
 # 4. Main Layout: Comparative View
+# -------------------------------------------------------------------------------------------------------------------
 col1, col2 = st.columns(2)
 # ------------------- Schedule A / RT1 -------------------
 with col1:
@@ -415,19 +414,24 @@ if mode == "Re-irradiation":
                    combined with the new treatment.
                    """
         )
+    # Validación de dosis para aplicar penalización
+    # Solo existe riesgo biológico por solapamiento si AMBAS dosis son > 0
+    has_overlap_risk = total_dose_a > 0 and total_dose_b > 0
 
-    # “The overlap penalty is applied to the effective BED
-    if overlap != "None":
-        if overlap_application == "cumulative":
-            bed_cumulative = (effective_bed_a + bed_b) * (1 + overlap_penalty[overlap])
-        else:
-            bed_cumulative = (effective_bed_a * (1 + overlap_penalty[overlap])) + bed_b
+    if overlap != "None" and has_overlap_risk:
+            penalty_factor = 1 + overlap_penalty[overlap]
+
+            if overlap_application == "cumulative":
+                # Modelo conservador: penaliza la suma total
+                bed_cumulative = (effective_bed_a + bed_b) * penalty_factor
+            else:
+                # Modelo estándar: penaliza solo la dosis remanente de RT1
+                bed_cumulative = (effective_bed_a * penalty_factor) + bed_b
     else:
-        bed_cumulative = effective_bed_a + bed_b
+            # Si una dosis es 0 o el usuario eligió "None", no se aplica penalización
+            bed_cumulative = effective_bed_a + bed_b
 
-    #bed_cumulative = effective_bed + bed_b
     eqd2_cumulative = bed_cumulative / (1 + (2 / ab))
-    #eqd2_cumulative = effective_bed / (1 + (2 / ab))
 
     col3, col4 = st.columns(2)
     with col3:
