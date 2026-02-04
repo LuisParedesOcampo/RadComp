@@ -1,5 +1,8 @@
+from tkinter.constants import DISABLED
+
 import streamlit as st
 import plotly.graph_objects as go
+from attr.validators import disabled
 
 # 1. Page Configuration (Metadata for SEO)
 st.set_page_config(
@@ -182,17 +185,40 @@ overlap_penalty = {
 # -------------------------------------------------------------------------
 # Helper functions
 # -------------------------------------------------------------------------
-def biology_calculation(total_dose: float, fractions: int, ab: float):
+def biology_calculation(total_dose: float, fractions: int, ab: float, use_lql: bool = False):
     """
     Calcula BED y EQD2 con validación de seguridad.
+    Soporta corrección LQL (Astrahan 2008) para dosis altas si use_lql=True.
     """
     if fractions <= 0 or ab <= 0:
-        return 0.0, 0.0, 0.0  # Evita el error de división por cero
-    dose_per_frac = total_dose / fractions
-    bed = total_dose * (1 + (dose_per_frac / ab))
+        return 0.0, 0.0, 0.0
+
+    d = total_dose / fractions  # Dosis por fracción
+
+    # --- MODELO LQL (Linear-Quadratic-Linear) ---
+    # Astrahan (2008): El umbral de transición (dT) es 2 * (alpha/beta)
+    dt = 2 * ab
+
+    if use_lql and d > dt:
+        # Corrección para altas dosis (SBRT/SRS)
+        # Parte A: Contribución hasta el umbral (Curva LQ)
+        term_hq = dt * (1 + (dt / ab))
+
+        # Parte B: Contribución lineal más allá del umbral
+        term_lin = (d - dt) * (1 + ((2 * dt) / ab))
+
+        # BED por fracción sumando ambas partes
+        bed_per_frac = term_hq + term_lin
+        bed = bed_per_frac * fractions
+    else:
+        # --- MODELO LQ ESTÁNDAR (Clásico) ---
+        bed = total_dose * (1 + (d / ab))
+
+    # Cálculo de EQD2 (Normalizado a 2Gy por fracción)
+    # Se usa la fórmula estándar derivada del BED calculado
     eqd2 = bed / (1 + (2 / ab))
 
-    return float(bed), float(eqd2), float(dose_per_frac)
+    return bed, eqd2, d
 
 
 def recovery_factor(months):
@@ -338,7 +364,7 @@ with st.sidebar:
 # -------------------------------------------------------------------------------------------------------------------
 col1, col2 = st.columns(2)
 # ------------------- Schedule A / RT1 -------------------
-with col1:
+with (col1):
     title_a = "Schedule A (Reference)"
     if mode == "Re-irradiation":
         title_a = "Previous Radiation Course (RT1)"
@@ -348,13 +374,33 @@ with col1:
     total_dose_a = st.number_input("Total Dose A (Gy)", min_value=0.0, value=45.0, key="dose_a")
     fractions_a = st.number_input("Number of Fractions A", min_value=1, value=25, key="frac_a")
 
-    bed_a, eqd2_a, dose_per_frac_a = biology_calculation(total_dose_a, fractions_a,
-                                                         ab)  # asi se pueden guardar los valores de una tupla
+    # --- LOGICA DUAL DE UMBRAL INTELIGENTE ---
+    d_check_a = total_dose_a / fractions_a if fractions_a > 0 else 0
+    astrahan_threshold = 2 * ab  # Umbral dinámico dT
+    use_lql_a = False
+
+    if d_check_a > astrahan_threshold:
+
+        st.caption(
+            f"⚠️ High Dose/Fx: Exceeds LQ validity for **{selection}**. "
+            f"It is suggested to enable the LQL correction below."
+        )
+        use_lql_a = st.checkbox(
+            "Enable LQL Correction (Astrahan 2008)",
+            value=False,
+            key="lql_a",
+            help=f"Standard LQ overestimates cell kill when dose per fraction > {astrahan_threshold:.1f} Gy for ***{selection}***."
+
+        )
+
+    bed_a, eqd2_a, dose_per_frac_a = biology_calculation(total_dose_a, fractions_a,ab,use_lql_a)  # asi se pueden guardar los valores de una tupla
 
     st.metric("Dose per Fraction A", f"{dose_per_frac_a:.2f} Gy")
     st.metric("BED A", f"{bed_a:.2f} Gy")
     st.metric("EQD2 A", f"{eqd2_a:.2f} Gy")
     st.metric("Alpha/Beta Ratio", f"{ab:.2f}")
+    if use_lql_a:
+        st.caption("✅ LQL Model Active")
 # ------------------- Schedule B / RT2 -------------------
 with col2:
     title_b = "Schedule B (New)"
@@ -365,12 +411,31 @@ with col2:
     total_dose_b = st.number_input("Total Dose B (Gy)", min_value=0.0, value=30.0, key="dose_b")
     fractions_b = st.number_input("Number of Fractions B", min_value=1, value=10, key="frac_b")
 
-    bed_b, eqd2_b, dose_per_frac_b = biology_calculation(total_dose_b, fractions_b, ab)
+    # --- LOGICA DUAL DE UMBRAL INTELIGENTE ---
+    d_check_b = total_dose_b / fractions_b if fractions_b > 0 else 0
+    # astrahan_threshold ya calculado arriba
+    use_lql_b = False
+
+    if d_check_b > astrahan_threshold:
+        st.caption(
+            f"⚠️ High Dose/Fx: Exceeds LQ validity for **{selection}**. "
+            f"It is suggested to enable the LQL correction below."
+        )
+        use_lql_b = st.checkbox(
+            "Enable LQL Correction (Astrahan 2008)",
+            value=False,
+            key="lql_b",
+            help=f"Standard LQ overestimates cell kill when dose per fraction > {astrahan_threshold:.1f} Gy for ***{selection}***."
+        )
+
+    bed_b, eqd2_b, dose_per_frac_b = biology_calculation(total_dose_b, fractions_b, ab,use_lql_b)
 
     st.metric("Dose per Fraction B", f"{dose_per_frac_b:.2f} Gy")
     st.metric("BED B", f"{bed_b:.2f} Gy")
     st.metric("EQD2 B", f"{eqd2_b:.2f} Gy")
     st.metric("Alpha/Beta Ratio", f"{ab:.2f}")
+    if use_lql_b:
+        st.caption("✅ LQL Model Active")
 
 # -------------------------------------------------------------------------
 # Re-irradiation Analysis
