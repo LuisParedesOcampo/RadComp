@@ -1,46 +1,43 @@
 # 🧬 RadComp: Radiobiology Calculator for Medical Physics
 
-**RadComp** is a clinical decision support tool designed to streamline the conversion of physical doses into biologically equivalent doses ($BED$ and $EQD2$) and to perform risk analysis in re-irradiation scenarios.
+**RadComp** is a clinical decision support tool designed to streamline the conversion of physical doses into biologically equivalent doses ($BED$ and $EQD2$) and to perform risk analysis in complex re-irradiation scenarios, including **SBRT/SRS**.
 
 🚀 **Live App Access:** [https://radcomp.streamlit.app/]
 
 ## ✨ Key Features
-- **LQ Modeling:** Precise fractionation conversion using the Linear-Quadratic model.
-- **Clinical Database:** Pre-configured $\alpha/\beta$ ratios and dose-volume constraints based on QUANTEC and international peer-reviewed literature.
+- **Dual-Engine Modeling:** Seamless switching between Standard LQ and **Linear-Quadratic-Linear (LQL)** models based on dose per fraction.
+- **Smart Clinical Alerts:** Dynamic detection of biological validity thresholds ($d_T = 2\cdot\alpha/\beta$) specific to the selected tissue (e.g., Spinal Cord vs. Tumor), preventing model misuse.
+- **Clinical Database:** Pre-configured $\alpha/\beta$ ratios and dose-volume constraints based on QUANTEC, HyTEC, and international peer-reviewed literature.
 - **Advanced Re-irradiation Module:**
-  - Time-based biological recovery modeling.
+  - Time-based biological recovery modeling (12-24 months).
   - Spatial overlap penalty adjustment for high-dose regions.
+  - Logic validation to prevent penalties on zero-dose structures.
   - Cumulative dose assessment with dynamic stacked charts.
 
-🧮 Radiobiological Model
-The tool utilizes the Linear-Quadratic (LQ) Model to calculate cell survival and biological effectiveness:
+## 🧮 Radiobiological Models
 
-1. Biologically Effective Dose (BED)
-The BED represents the total dose required to produce a specific biological effect if delivered in infinitely small fractions:
+RadComp utilizes a hybrid approach to prevent the known overestimation of cell kill by the LQ model at high doses per fraction (SBRT/SRS).
+
+### 1. Standard Linear-Quadratic (LQ) Model
+Used for conventional fractionation where dose per fraction $d$ is within the "shoulder" of the survival curve.
 
 $$BED = D \times \left(1 + \frac{d}{\alpha/\beta}\right)$$
 
-2. Equivalent Dose in 2 Gy (EQD2)
+### 2. High-Dose Correction (LQL Model)
+For hypofractionated treatments (SBRT/SRS), RadComp implements the **Linear-Quadratic-Linear (LQL)** model proposed by *Astrahan (2008)*. The model transitions from a quadratic curve to a straight line at a specific threshold dose $d_T$:
+
+**Validity Threshold:**
+$$d_T = 2 \cdot (\alpha/\beta)$$
+
+**Calculation ($d > d_T$):**
+$$BED_{LQL} = \frac{1}{\alpha} \left[ \alpha d_T + \beta d_T^2 + \gamma (d - d_T) \right] \times N$$
+
+*This correction is suggested automatically by the interface when the dose per fraction exceeds the specific biological threshold of the selected organ.*
+
+### 3. Equivalent Dose in 2 Gy (EQD2)
 To normalize treatment schemes to a standard 2 Gy fractionation:
    
 $$EQD2 = \frac{BED}{1 + \frac{2}{\alpha/\beta}}$$
-
-Where $D$ is the total dose, $d$ is the dose per fraction, and $\alpha/\beta$ is the tissue-specific radiosensitivity ratio.
-
-## 🛠️ Tech Stack
-- **Python 3.x**
-- **Streamlit** (UI Framework)
-- **Plotly** (Interactive Visualizations)
-
-🚀 Installation & Local Run
-To run this project locally, clone the repository and install the dependencies:
-
-git clone [https://github.com/LuisParedesOcampo/RadComp.git]
-
-- cd RadComp
-- pip install -r requirements.txt
-- streamlit run main.py
-
 
 ## 🧪 Clinical Validation
 Reliability is our priority. RadComp's calculation engine has been validated using test vectors compared against reference clinical cases:
@@ -64,3 +61,19 @@ I am a Medical Physicist interested about the intersection of oncology and softw
 
 LinkedIn: Luis Fernando Paredes https://www.linkedin.com/in/lfparedes1/
 Email: luisfernandoparedes2@gmail.com
+
+
+## 🛠️ Tech Stack
+- **Python 3.10+**
+- **Streamlit** (UI Framework)
+- **Plotly** (Interactive Visualizations)
+- **NumPy/Pandas** (Calculation Engine)
+
+## 🚀 Installation & Local Run
+To run this project locally, clone the repository and install the dependencies:
+
+```bash
+git clone [https://github.com/LuisParedesOcampo/RadComp.git](https://github.com/LuisParedesOcampo/RadComp.git)
+cd RadComp
+pip install -r requirements.txt
+streamlit run main.py
