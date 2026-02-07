@@ -378,10 +378,9 @@ with (col1):
     use_lql_a = False
 
     if d_check_a > astrahan_threshold:
-
         st.caption(
             f"⚠️ High Dose/Fx: Exceeds LQ validity for **{selection}**. "
-            f"It is suggested to enable the LQL correction below."
+            f"Consider enabling the LQL correction for improved accuracy."
         )
         use_lql_a = st.checkbox(
             "Enable LQL Correction (Astrahan 2008)",
@@ -399,6 +398,12 @@ with (col1):
     st.metric("Alpha/Beta Ratio", f"{ab:.2f}")
     if use_lql_a:
         st.caption("✅ LQL Model Active")
+        st.warning(
+            "⚠️ **Clinical Caution: Less Conservative Model**\n\n"
+            "You are using the **LQL Model (Astrahan 2008)**, which corrects the overestimation of the standard LQ model.\n"
+            "**Note:** Resulting biological doses (BED/EQD2) are **lower** than standard LQ values. "
+            "Do not escalate physical dose solely based on this reduction without clinical justification."
+        )
 # ------------------- Schedule B / RT2 -------------------
 with col2:
     title_b = "Schedule B (New)"
@@ -417,7 +422,7 @@ with col2:
     if d_check_b > astrahan_threshold:
         st.caption(
             f"⚠️ High Dose/Fx: Exceeds LQ validity for **{selection}**. "
-            f"It is suggested to enable the LQL correction below."
+            f"Consider enabling the LQL correction for improved accuracy."
         )
         use_lql_b = st.checkbox(
             "Enable LQL Correction (Astrahan 2008)",
@@ -434,6 +439,12 @@ with col2:
     st.metric("Alpha/Beta Ratio", f"{ab:.2f}")
     if use_lql_b:
         st.caption("✅ LQL Model Active")
+        st.warning(
+            "⚠️ **Clinical Caution: Less Conservative Model**\n\n"
+            "You are using the **LQL Model (Astrahan 2008)**, which corrects the overestimation of the standard LQ model.\n"
+            "**Note:** Resulting biological doses (BED/EQD2) are **lower** than standard LQ values. "
+            "Do not escalate physical dose solely based on this reduction without clinical justification."
+        )
 
 # -------------------------------------------------------------------------
 # Re-irradiation Analysis
