@@ -24,7 +24,7 @@ Used for conventional fractionation where dose per fraction $d$ is within the "s
 $$BED = D \times \left(1 + \frac{d}{\alpha/\beta}\right)$$
 
 ### 2. High-Dose Correction (LQL Model)
-For hypofractionated treatments (SBRT/SRS), RadComp implements the **Linear-Quadratic-Linear (LQL)** model proposed by *Astrahan (2008)*. The model transitions from a quadratic curve to a straight line at a specific threshold dose $d_T$:
+For hypofractionated treatments (SBRT/SRS), RadComp implements the **Linear-Quadratic-Linear (LQL)** model proposed by *Astrahan (2008)*  https://doi.org/10.1118/1.2969065. The model transitions from a quadratic curve to a straight line at a specific threshold dose $d_T$:
 
 **Validity Threshold:**
 $$d_T = 2 \cdot (\alpha/\beta)$$
