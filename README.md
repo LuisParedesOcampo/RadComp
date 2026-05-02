@@ -2,7 +2,8 @@
 
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Medical Physics](https://img.shields.io/badge/Medical_Physics-Clinical_Tool-01579b?style=for-the-badge)
+<!--![Medical Physics](https://img.shields.io/badge/Medical_Physics-Clinical_Tool-01579b?style=for-the-badge)-->
+ 
 
 **RadComp** is a Radiotherapy clinical decision support tool designed to streamline the conversion of physical doses into biologically equivalent doses ($BED$ and $EQD2$) and to perform risk analysis in complex re-irradiation scenarios, including **SBRT/SRS**.
 
