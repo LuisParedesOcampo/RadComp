@@ -57,17 +57,6 @@ Reliability is our priority. RadComp's calculation engine has been validated usi
 ## ⚖️ License
 This project is licensed under the **MIT License**. Feel free to use, modify, and collaborate. See the [LICENSE](LICENSE) file for details.
 
-⚠️ Disclaimer
-
-For Research and Educational Use Only. This tool is not a medical device and has not been cleared for clinical use by any regulatory authority. All calculations must be independently verified by a certified Medical Physicist or Radiation Oncologist. The author assumes no liability for clinical errors or misuse of this software.
-
-✉️ Contact & Collaboration
-I am a Medical Physicist interested about the intersection of oncology and software development. I am open to feedback, collaborations, and professional opportunities.
-
-LinkedIn: Luis Fernando Paredes https://www.linkedin.com/in/lfparedes1/
-Email: luisfernandoparedes2@gmail.com
-
-
 ## 🛠️ Tech Stack
 - **Python 3.10+**
 - **Streamlit** (UI Framework)
@@ -78,7 +67,16 @@ Email: luisfernandoparedes2@gmail.com
 To run this project locally, clone the repository and install the dependencies:
 
 ```bash
-git clone [https://github.com/LuisParedesOcampo/RadComp.git](https://github.com/LuisParedesOcampo/RadComp.git)
-cd RadComp
-pip install -r requirements.txt
-streamlit run main.py
+ git clone [https://github.com/LuisParedesOcampo/RadComp.git](https://github.com/LuisParedesOcampo/RadComp.git)
+ cd RadComp
+ pip install -r requirements.txt
+ streamlit run main.py
+```
+
+## ⚠️ Disclaimer
+
+For Research and Educational Use Only. This tool is not a medical device and has not been cleared for clinical use by any regulatory authority. All calculations must be independently verified by a certified Medical Physicist or Radiation Oncologist. The author assumes no liability for clinical errors or misuse of this software.
+
+✉️ Contact & Collaboration
+## LinkedIn: Luis Fernando Paredes [https://www.linkedin.com/in/lfparedes1/]
+Email: luisfernandoparedes2@gmail.com
