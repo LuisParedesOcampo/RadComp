@@ -1,6 +1,6 @@
 # 🧬 RadComp: Radiobiology Calculator for Medical Physics
 
-**RadComp** is a clinical decision support tool designed to streamline the conversion of physical doses into biologically equivalent doses ($BED$ and $EQD2$) and to perform risk analysis in complex re-irradiation scenarios, including **SBRT/SRS**.
+**RadComp** is a Radiotherapy clinical decision support tool designed to streamline the conversion of physical doses into biologically equivalent doses ($BED$ and $EQD2$) and to perform risk analysis in complex re-irradiation scenarios, including **SBRT/SRS**.
 
 🚀 **Live App Access:** [https://radcomp.streamlit.app/]
 
